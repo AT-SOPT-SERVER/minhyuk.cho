@@ -9,7 +9,7 @@ public class PostService {
 
 	private PostRepository postRepository = new PostRepository();
 
-	public void createPsot(Post post){
+	public void createPost(Post post){
 		postRepository.save(post);
 	}
 

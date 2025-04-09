@@ -13,7 +13,7 @@ public class PostController {
 
 	public void createPost(String title) {
 		Post post = new Post(postId++,title);
-		postService.createPsot(post);
+		postService.createPost(post);
 	}
 	public Boolean updatePostTitle(int id, String newTitle) {
 		return null;
@@ -34,7 +34,5 @@ public class PostController {
 	public List<Post> searchPostsByKeyword(String keyword) {
 		return null;
 	}
-	// public Object selectMethod(){
-	//
-	// }
+
 }
