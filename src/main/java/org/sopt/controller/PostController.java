@@ -14,6 +14,8 @@ public class PostController {
 	public void createPost(String title) {
 		if(title.isEmpty()){
 			throw new IllegalArgumentException("제목이 비어있습니다.");
+		}else if(title.length() > 30){
+			throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
 		}
 
 		Post post = new Post(postId++,title);
@@ -31,6 +33,8 @@ public class PostController {
 	public Boolean updatePostTitle(int id, String newTitle) {
 		if(newTitle.isEmpty()){
 			throw new IllegalArgumentException("제목이 비어있습니다.");
+		}else if(newTitle.length() > 30){
+			throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
 		}
 		return postService.updatePostById(id,newTitle);
 	}
