@@ -12,6 +12,10 @@ public class PostController {
 
 
 	public void createPost(String title) {
+		if(title.isEmpty()){
+			throw new IllegalArgumentException("제목이 비어있습니다.");
+		}
+
 		Post post = new Post(postId++,title);
 		postService.createPost(post);
 	}
@@ -25,6 +29,9 @@ public class PostController {
 	}
 
 	public Boolean updatePostTitle(int id, String newTitle) {
+		if(newTitle.isEmpty()){
+			throw new IllegalArgumentException("제목이 비어있습니다.");
+		}
 		return postService.updatePostById(id,newTitle);
 	}
 
