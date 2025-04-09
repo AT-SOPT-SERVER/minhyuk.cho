@@ -6,12 +6,8 @@ import org.sopt.domain.Post;
 import org.sopt.repository.PostRepository;
 
 public class PostService {
-	//repository -> 저장소 , service -> 그걸 직접 사용하는 곳
-	private PostRepository postRepository = new PostRepository();
 
-	// PostService(PostRepository postRepository) {
-	// 	this.postRepository = postRepository;
-	// }
+	private PostRepository postRepository = new PostRepository();
 
 	public void createPsot(Post post){
 		postRepository.save(post);
