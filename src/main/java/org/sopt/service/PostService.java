@@ -7,7 +7,7 @@ import org.sopt.repository.PostRepository;
 
 public class PostService {
 
-	private PostRepository postRepository = new PostRepository();
+	private final PostRepository postRepository = new PostRepository();
 
 	public void createPost(Post post){
 		postRepository.save(post);
@@ -28,4 +28,13 @@ public class PostService {
 	public Boolean deletePostById(int id){
 		return postRepository.deleteById(id);
 	}
+	public Boolean updatePostById(int id, String newTitle){
+		Post post = postRepository.findById(id);
+		if(post == null){
+			return false;
+		}
+		post.setTitle(newTitle);
+		return true;
+	}
+
 }

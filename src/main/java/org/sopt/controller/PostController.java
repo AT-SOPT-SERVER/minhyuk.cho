@@ -16,7 +16,7 @@ public class PostController {
 		postService.createPost(post);
 	}
 	public Boolean updatePostTitle(int id, String newTitle) {
-		return null;
+		return postService.updatePostById(id,newTitle);
 	}
 
 	public List<Post> getAllPosts(){
