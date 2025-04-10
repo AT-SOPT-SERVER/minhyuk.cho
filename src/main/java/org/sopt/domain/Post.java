@@ -1,11 +1,13 @@
 package org.sopt.domain;
 
+import org.sopt.utils.IDGenUtil;
+
 public class Post {
 	private int id;
 	private String title;
 
-	public Post(int id, String title){
-		this.id = id;
+	public Post(String title){
+		this.id = IDGenUtil.generateId();
 		this.title = title;
 	}
 

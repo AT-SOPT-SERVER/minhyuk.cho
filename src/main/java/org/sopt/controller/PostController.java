@@ -19,7 +19,7 @@ public class PostController {
 			throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
 		}
 
-		Post post = new Post(postId++,title);
+		Post post = new Post(title);
 		if(!postService.createPost(post)){
 			throw new DuplicateTitleException();
 		}
