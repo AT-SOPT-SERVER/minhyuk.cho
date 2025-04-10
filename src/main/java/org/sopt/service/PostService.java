@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.sopt.domain.Post;
 import org.sopt.exception.DuplicateTitleException;
+import org.sopt.global.CheckTime;
 import org.sopt.repository.PostRepository;
 
 public class PostService {
@@ -13,6 +14,7 @@ public class PostService {
 	public Boolean createPost(Post post){
 		if(!findDuplicateTitle(post.getTitle())){
 			postRepository.save(post);
+			CheckTime.setTimestamp();
 			return true;
 		}
 		return false;
