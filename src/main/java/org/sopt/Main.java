@@ -27,7 +27,7 @@ public class Main {
 						controller.createPost(title);
 						System.out.println("✅ 게시글이 성공적으로 저장되었습니다!");
 						break;
-					}catch(IllegalArgumentException E){
+					}catch(Exception E){
 						System.out.println(E.getMessage());
 						break;
 					}
@@ -70,7 +70,7 @@ public class Main {
 							System.out.println("❌ 해당 ID의 게시글이 존재하지 않습니다.");
 						}
 						break;
-					}catch(IllegalArgumentException E){
+					}catch(Exception E){
 						System.out.println(E.getMessage());
 						break;
 					}

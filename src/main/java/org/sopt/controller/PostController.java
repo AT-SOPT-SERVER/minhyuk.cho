@@ -3,6 +3,7 @@ package org.sopt.controller;
 import java.util.List;
 
 import org.sopt.domain.Post;
+import org.sopt.exception.DuplicateTitleException;
 import org.sopt.service.PostService;
 
 public class PostController {
@@ -19,7 +20,9 @@ public class PostController {
 		}
 
 		Post post = new Post(postId++,title);
-		postService.createPost(post);
+		if(!postService.createPost(post)){
+			throw new DuplicateTitleException();
+		}
 	}
 
 	public List<Post> getAllPosts(){
@@ -36,7 +39,11 @@ public class PostController {
 		}else if(newTitle.length() > 30){
 			throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
 		}
-		return postService.updatePostById(id,newTitle);
+
+		if(!postService.updatePostById(id,newTitle)){
+			throw new DuplicateTitleException();
+		}
+		return true;
 	}
 
 	public Boolean deletePostById(int id) {

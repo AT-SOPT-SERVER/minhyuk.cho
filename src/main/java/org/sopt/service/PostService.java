@@ -9,8 +9,12 @@ public class PostService {
 
 	private final PostRepository postRepository = new PostRepository();
 
-	public void createPost(Post post){
-		postRepository.save(post);
+	public Boolean createPost(Post post){
+		if(!findDuplicateTitle(post.getTitle())){
+			postRepository.save(post);
+			return true;
+		}
+		return false;
 	}
 
 	public List<Post> getAllPosts(){
@@ -27,7 +31,7 @@ public class PostService {
 
 	public Boolean updatePostById(int id, String newTitle){
 		Post post = postRepository.findById(id);
-		if(post == null){
+		if(post == null || findDuplicateTitle(newTitle)){
 			return false;
 		}
 		post.setTitle(newTitle);
@@ -38,5 +42,12 @@ public class PostService {
 		return postRepository.deleteById(id);
 	}
 
-
+	private Boolean findDuplicateTitle(String newTitle){
+		for(Post posting : postRepository.findAll()){
+			if(posting.getTitle().equals(newTitle)){
+				return true;
+			}
+		}
+		return false;
+	}
 }

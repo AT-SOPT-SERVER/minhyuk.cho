@@ -18,9 +18,9 @@ public class PostRepository {
 	}
 
 	public Post findById(int id) {
-		for (Post post : postList) {
-			if (post.getId() == id) {
-				return post;
+		for (int i=0;i<postList.size();i++) {
+			if (postList.get(i).getId() == id) {
+				return postList.get(i);
 			}
 		}
 		return null;
