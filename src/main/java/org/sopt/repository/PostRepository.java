@@ -25,6 +25,15 @@ public class PostRepository {
 		}
 		return null;
 	}
+	public List<Post> findByKeyword(String keyword){
+		List<Post> newList = new ArrayList<>();
+		for(Post post : postList){
+			if(post.getTitle().contains(keyword)){
+				newList.add(post);
+			}
+		}
+		return newList;
+	}
 
 	public Boolean deleteById(int id) {
 		for (Post post : postList) {

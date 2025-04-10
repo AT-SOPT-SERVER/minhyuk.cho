@@ -46,6 +46,11 @@ public class PostService {
 		return postRepository.deleteById(id);
 	}
 
+	public List<Post> findPostsByKeyword(String keyword){
+		return postRepository.findByKeyword(keyword);
+	}
+
+
 	private Boolean findDuplicateTitle(String newTitle){
 		for(Post posting : postRepository.findAll()){
 			if(posting.getTitle().equals(newTitle)){
