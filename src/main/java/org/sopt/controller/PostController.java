@@ -9,7 +9,8 @@ import org.sopt.global.CheckTime;
 import org.sopt.service.PostService;
 
 public class PostController {
-	private PostService postService = new PostService();
+
+	private final PostService postService = new PostService();
 
 	public void createPost(String title) {
 		if(title.isEmpty()){
@@ -50,6 +51,14 @@ public class PostController {
 
 	public List<Post> searchPostsByKeyword(String keyword) {
 		return postService.findPostsByKeyword(keyword);
+	}
+
+	public void printToFile(){
+		postService.printToFile();
+	}
+
+	public void readFromFile(){
+		postService.readFromFile();
 	}
 
 }
