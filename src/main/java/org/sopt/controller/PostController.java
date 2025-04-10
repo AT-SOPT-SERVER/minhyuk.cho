@@ -39,10 +39,7 @@ public class PostController {
 		}else if(newTitle.length() > 30){
 			throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
 		}
-
-		if(!postService.updatePostById(id,newTitle)){
-			throw new DuplicateTitleException();
-		}
+		postService.updatePostById(id,newTitle);
 		return true;
 	}
 

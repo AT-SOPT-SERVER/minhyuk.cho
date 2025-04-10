@@ -3,6 +3,7 @@ package org.sopt.service;
 import java.util.List;
 
 import org.sopt.domain.Post;
+import org.sopt.exception.DuplicateTitleException;
 import org.sopt.repository.PostRepository;
 
 public class PostService {
@@ -29,13 +30,14 @@ public class PostService {
 		return postRepository.findById(id);
 	}
 
-	public Boolean updatePostById(int id, String newTitle){
+	public void updatePostById(int id, String newTitle){
 		Post post = postRepository.findById(id);
-		if(post == null || findDuplicateTitle(newTitle)){
-			return false;
+		if(post == null){
+			throw new IllegalArgumentException("존재하지 않는 ID입니다.");
+		}else if(findDuplicateTitle(newTitle)){
+			throw new DuplicateTitleException();
 		}
 		post.setTitle(newTitle);
-		return true;
 	}
 
 	public Boolean deletePostById(int id){
