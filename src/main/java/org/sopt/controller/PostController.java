@@ -11,9 +11,6 @@ import org.sopt.service.PostService;
 public class PostController {
 	private PostService postService = new PostService();
 
-	private int postId;
-
-
 	public void createPost(String title) {
 		if(title.isEmpty()){
 			throw new IllegalArgumentException("제목이 비어있습니다.");
