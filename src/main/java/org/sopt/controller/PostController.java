@@ -7,6 +7,7 @@ import org.sopt.exception.DuplicateTitleException;
 import org.sopt.exception.TImeLimitException;
 import org.sopt.global.CheckTime;
 import org.sopt.service.PostService;
+import org.sopt.utils.EmojiUtil;
 
 public class PostController {
 
@@ -15,10 +16,13 @@ public class PostController {
 	public void createPost(String title) {
 		if(title.isEmpty()){
 			throw new IllegalArgumentException("제목이 비어있습니다.");
-		}else if(title.length() > 30){
-			throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
-		}else if(!CheckTime.checkTime()){
-			throw new TImeLimitException();
+		}else{
+			int titleLength = EmojiUtil.getEmojiLength(title);
+			if(titleLength > 30){
+				throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
+			}else if(!CheckTime.checkTime()){
+				throw new TImeLimitException();
+			}
 		}
 
 		Post post = new Post(title);
@@ -38,8 +42,11 @@ public class PostController {
 	public Boolean updatePostTitle(int id, String newTitle) {
 		if(newTitle.isEmpty()){
 			throw new IllegalArgumentException("제목이 비어있습니다.");
-		}else if(newTitle.length() > 30){
-			throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
+		}else{
+			int titleLength = EmojiUtil.getEmojiLength(newTitle);
+			if(titleLength > 30){
+				throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
+			}
 		}
 		postService.updatePostById(id,newTitle);
 		return true;
