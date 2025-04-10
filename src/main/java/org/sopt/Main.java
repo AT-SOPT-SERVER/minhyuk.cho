@@ -1,14 +1,9 @@
 package org.sopt;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 import org.sopt.controller.PostController;
 import org.sopt.domain.Post;
-import org.sopt.utils.IDGenUtil;
 
 public class Main {
 	public static void main(String[] args) {

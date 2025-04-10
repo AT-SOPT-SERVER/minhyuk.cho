@@ -12,7 +12,6 @@ import org.sopt.domain.Post;
 import org.sopt.exception.DuplicateTitleException;
 import org.sopt.global.CheckTime;
 import org.sopt.repository.PostRepository;
-import org.sopt.utils.IDGenUtil;
 
 public class PostService {
 
