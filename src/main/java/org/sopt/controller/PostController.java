@@ -26,9 +26,8 @@ public class PostController {
 		}
 
 		Post post = new Post(title);
-		if(!postService.createPost(post)){
-			throw new DuplicateTitleException();
-		}
+		postService.createPost(post);
+
 	}
 
 	public List<Post> getAllPosts(){

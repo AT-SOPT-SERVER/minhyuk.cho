@@ -3,7 +3,7 @@ package org.sopt.domain;
 import org.sopt.utils.IDGenUtil;
 
 public class Post {
-	private final long id;
+	private Long id;
 	private String title;
 
 	public Post(String title){
@@ -11,7 +11,11 @@ public class Post {
 		this.title = title;
 	}
 
-	public long getId(){
+	public void setId(long id){
+		this.id = id;
+	}
+
+	public Long getId(){
 		return this.id;
 	}
 

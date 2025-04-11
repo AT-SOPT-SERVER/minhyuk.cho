@@ -6,4 +6,7 @@ public class IDGenUtil {
 	public static Long generateId(){
 		return Id++;
 	}
+	public static void setId(long newId){
+		Id = newId;
+	}
 }
