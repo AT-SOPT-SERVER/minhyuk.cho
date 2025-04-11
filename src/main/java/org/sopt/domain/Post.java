@@ -3,7 +3,7 @@ package org.sopt.domain;
 import org.sopt.utils.IDGenUtil;
 
 public class Post {
-	private int id;
+	private final int id;
 	private String title;
 
 	public Post(String title){
