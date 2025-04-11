@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.sopt.domain.Post;
-import org.sopt.utils.IDGenUtil;
 
 public class PostRepository {
 
