@@ -1,47 +1,41 @@
 package org.sopt.repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.sopt.domain.Post;
+import org.sopt.utils.IDGenUtil;
 
 public class PostRepository {
 
-	List<Post> postList = new ArrayList<>();
+	Map<Long,Post> postMap = new HashMap<>();
 
 	public void save(Post post) {
-		postList.add(post);
+		postMap.put(post.getId(),post);
 	}
 
-	public List<Post> findAll(){
-		return postList;
+	public Map<Long,Post> findAll(){
+		return postMap;
 	}
 
-	public Post findById(int id) {
-		for (Post post : postList) {
-			if (post.getId() == id) {
-				return post;
-			}
-		}
-		return null;
+	public Post findById(long id) {
+		return postMap.get(id);
 	}
+
 	public List<Post> findByKeyword(String keyword){
 		List<Post> newList = new ArrayList<>();
-		for(Post post : postList){
-			if(post.getTitle().contains(keyword)){
-				newList.add(post);
+		for(Map.Entry<Long,Post> post : postMap.entrySet()){
+			if(post.getValue().getTitle().contains(keyword)){
+				newList.add(post.getValue());
 			}
 		}
 		return newList;
 	}
 
-	public Boolean deleteById(int id) {
-		for (Post post : postList) {
-			if (post.getId() == id) {
-				postList.remove(post);
-				return true;
-			}
-		}
-		return false;
+	public Boolean deleteById(long id) {
+		Post post = postMap.remove(id);
+		return post != null;
 	}
 }

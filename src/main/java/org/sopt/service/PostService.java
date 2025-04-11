@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.sopt.domain.Post;
@@ -30,7 +32,7 @@ public class PostService {
 	}
 
 	public List<Post> getAllPosts(){
-		return postRepository.findAll();
+		return mapToList();
 	}
 
 	public Post getPostById(int id){
@@ -65,7 +67,6 @@ public class PostService {
 				Scanner fsc  = new Scanner(new FileReader(file));
 				while(fsc.hasNext()){
 					String lines = fsc.nextLine();
-					System.out.println(lines);
 					postRepository.save(new Post(lines));
 				}
 				fsc.close();
@@ -80,7 +81,7 @@ public class PostService {
 	public void printToFile(){
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-			for(Post post : postRepository.findAll()){
+			for(Post post : mapToList()){
 				writer.write(post.getTitle());
 				writer.newLine();
 			}
@@ -92,11 +93,19 @@ public class PostService {
 
 
 	private Boolean findDuplicateTitle(String newTitle){
-		for(Post posting : postRepository.findAll()){
+		for(Post posting : mapToList()){
 			if(posting.getTitle().equals(newTitle)){
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private List<Post> mapToList(){
+		List<Post> postList = new ArrayList<>();
+		for(Map.Entry<Long,Post> post : postRepository.findAll().entrySet()){
+			postList.add(post.getValue());
+		}
+		return postList;
 	}
 }
