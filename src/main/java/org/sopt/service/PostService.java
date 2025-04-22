@@ -3,16 +3,15 @@ package org.sopt.service;
 import static org.sopt.service.validator.PostValidator.*;
 import static org.sopt.utils.MapUtil.*;
 
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Map;
+
 
 import org.sopt.domain.Post;
 import org.sopt.exception.DuplicateTitleException;
 import org.sopt.global.CheckTime;
 import org.sopt.repository.PostRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Service
 public class PostService {
