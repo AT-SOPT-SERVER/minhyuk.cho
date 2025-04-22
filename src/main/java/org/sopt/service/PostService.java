@@ -1,7 +1,7 @@
 package org.sopt.service;
 
 import static org.sopt.service.validator.PostValidator.*;
-
+import static org.sopt.utils.MapUtil.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,30 +11,33 @@ import org.sopt.domain.Post;
 import org.sopt.exception.DuplicateTitleException;
 import org.sopt.global.CheckTime;
 import org.sopt.repository.PostRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
+@Service
 public class PostService {
 
-	private final PostRepository postRepository = new PostRepository();
-
+	private final PostRepository postRepository;
+	public PostService(PostRepository postRepository) {
+		this.postRepository = postRepository;
+	}
 
 	public void createPost(Post post){
-		if(!findDuplicateTitle(post.getTitle(),mapToList())){
+		if(!findDuplicateTitle(post.getTitle(),mapToList(postRepository.findAll()))){
 			postRepository.save(post);
+			System.out.println(post.getTitle());
 			CheckTime.setTimestamp();
 		}else {
 			throw new DuplicateTitleException();
 		}
 	}
 
+
 	public List<Post> getAllPosts(){
-		return mapToList();
+		return mapToList(postRepository.findAll());
 	}
 
 	public Post getPostById(int id){
-		Post post = postRepository.findById(id);
-		if(post == null){
-			return null;
-		}
 		return postRepository.findById(id);
 	}
 
@@ -42,7 +45,7 @@ public class PostService {
 		Post post = postRepository.findById(id);
 		if(post == null){
 			throw new IllegalArgumentException("존재하지 않는 ID입니다.");
-		}else if(findDuplicateTitle(newTitle,mapToList())){
+		}else if(findDuplicateTitle(newTitle,mapToList(postRepository.findAll()))){
 			throw new DuplicateTitleException();
 		}
 		post.setTitle(newTitle);
@@ -67,11 +70,4 @@ public class PostService {
 
 
 
-	private List<Post> mapToList(){
-		List<Post> postList = new ArrayList<>();
-		for(Map.Entry<Long,Post> post : postRepository.findAll().entrySet()){
-			postList.add(post.getValue());
-		}
-		return postList;
-	}
 }
