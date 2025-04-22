@@ -13,7 +13,9 @@ import java.util.Scanner;
 
 import org.sopt.domain.Post;
 import org.sopt.utils.IDGenUtil;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class PostRepository {
 
 	Map<Long,Post> postMap = new HashMap<>();
@@ -56,9 +58,8 @@ public class PostRepository {
 					String lines = fsc.nextLine();
 					lines = lines.trim();
 					String[] parts = lines.split(" ");
-					Post post = new Post(parts[1]);
-					post.setId(Integer.parseInt(parts[0]));
 					number = Integer.parseInt(parts[0]);
+					Post post = new Post(number,parts[1]);
 					save(post);
 				}
 				IDGenUtil.setId(number);
