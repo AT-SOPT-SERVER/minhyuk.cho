@@ -5,7 +5,7 @@ import static org.sopt.utils.MapUtil.*;
 
 
 import java.util.List;
-
+import java.util.Optional;
 
 import org.sopt.domain.Post;
 import org.sopt.dto.PostDTO;
@@ -15,6 +15,8 @@ import org.sopt.global.exception.DuplicateTitleException;
 import org.sopt.global.CheckTime;
 import org.sopt.repository.PostRepository;
 import org.springframework.stereotype.Service;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class PostService {
@@ -41,10 +43,11 @@ public class PostService {
 		return new PostListDTO(postRepository.findAll());
 	}
 
-	// public Post getPostById(int id){
-	// 	return postRepository.findById(id);
-	// }
-	//
+	public Post getPostById(Long id){
+		return postRepository.findById(id)
+			.orElseThrow(() -> new EntityNotFoundException("해당 게시글이 존재하지 않습니다."));
+	}
+
 	// public void updatePostById(int id, String newTitle){
 	// 	Post post = postRepository.findById(id);
 	// 	if(post == null){

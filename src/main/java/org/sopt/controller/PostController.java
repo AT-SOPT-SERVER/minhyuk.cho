@@ -12,6 +12,7 @@ import org.sopt.utils.EmojiUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,10 +30,10 @@ public class PostController {
 
 	@PostMapping("/contents")
 	public ResponseEntity<?> createPost(@RequestBody final PostRequest postRequest) {
-		if(postRequest.getTitle().isEmpty()){
+		if(postRequest.title().isEmpty()){
 			throw new IllegalArgumentException("제목이 비어있습니다.");
 		}else{
-			int titleLength = EmojiUtil.getEmojiLength(postRequest.getTitle());
+			int titleLength = EmojiUtil.getEmojiLength(postRequest.title());
 			if(titleLength > 30){
 				throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
 			}
@@ -41,7 +42,7 @@ public class PostController {
 			// }
 		}
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(new ResponseDTO<>(201,"게시글이 작성되었습니다.", postService.createPost(postRequest.getTitle())));
+			.body(new ResponseDTO<>(201,"게시글이 작성되었습니다.", postService.createPost(postRequest.title())));
 	}
 
 
@@ -51,10 +52,12 @@ public class PostController {
 			.body(new ResponseDTO<>(200, "전체 게시글이 조회되었습니다.",postService.getAllPosts()));
 	}
 
-	// public Post getPostById(int id) {
-	// 	return postService.getPostById(id);
-	// }
-	//
+	@GetMapping("/contents/{contentId}")
+	public ResponseEntity<?> getPostById(@PathVariable("contentId") Long id) {
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new ResponseDTO<>(200,"게시글 상세 조회",postService.getPostById(id)));
+	}
+
 	// public Boolean updatePostTitle(int id, String newTitle) {
 	// 	if(newTitle.isEmpty()){
 	// 		throw new IllegalArgumentException("제목이 비어있습니다.");
