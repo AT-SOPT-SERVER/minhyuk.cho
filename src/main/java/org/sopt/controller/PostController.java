@@ -1,17 +1,16 @@
 package org.sopt.controller;
 
-import java.util.List;
 
-import org.sopt.domain.Post;
+
 import org.sopt.dto.PostRequest;
 import org.sopt.dto.ResponseDTO;
-import org.sopt.global.exception.TImeLimitException;
-import org.sopt.global.CheckTime;
 import org.sopt.service.PostService;
 import org.sopt.utils.EmojiUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,28 +52,34 @@ public class PostController {
 	}
 
 	@GetMapping("/contents/{contentId}")
-	public ResponseEntity<?> getPostById(@PathVariable("contentId") Long id) {
+	public ResponseEntity<?> getPostById(@PathVariable("contentId") final Long id) {
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new ResponseDTO<>(200,"게시글 상세 조회",postService.getPostById(id)));
 	}
 
-	// public Boolean updatePostTitle(int id, String newTitle) {
-	// 	if(newTitle.isEmpty()){
-	// 		throw new IllegalArgumentException("제목이 비어있습니다.");
-	// 	}else{
-	// 		int titleLength = EmojiUtil.getEmojiLength(newTitle);
-	// 		if(titleLength > 30){
-	// 			throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
-	// 		}
-	// 	}
-	// 	postService.updatePostById(id,newTitle);
-	// 	return true;
-	// }
-	//
-	// public Boolean deletePostById(int id) {
-	// 	return postService.deletePostById(id);
-	// }
-	//
+	@PatchMapping("contents/{contentId}")
+	public ResponseEntity<?> updatePostTitle(@PathVariable("contentId") final Long id, @RequestBody final PostRequest postRequest) {
+		if(postRequest.title().isEmpty()){
+			throw new IllegalArgumentException("제목이 비어있습니다.");
+		}else{
+			int titleLength = EmojiUtil.getEmojiLength(postRequest.title());
+			if(titleLength > 30){
+				throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
+			}
+		}
+
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new ResponseDTO<>(200,"게시글이 수정되었습니다.",postService.updatePostById(id,postRequest.title())));
+
+	}
+
+	@DeleteMapping("/contents/{contentId}")
+	public ResponseEntity<?> deletePostById(@PathVariable("contentId") Long id) {
+		postService.deletePostById(id);
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new ResponseDTO<>(200,"게시글이 삭제되었습니다.",null));
+	}
+
 	// public List<Post> searchPostsByKeyword(String keyword) {
 	// 	return postService.findPostsByKeyword(keyword);
 	// }

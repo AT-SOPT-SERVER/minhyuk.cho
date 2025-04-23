@@ -1,11 +1,21 @@
 package org.sopt.dto;
 
-public class PostDTO {
-	private String title;
-	private Long postId;
+import org.sopt.domain.Post;
 
-	public PostDTO(String title, Long postId){
-		this.title = title;
-		this.postId = postId;
+public class PostDTO {
+	private Long contentId;
+	private String title;
+
+	public PostDTO(Post post){
+		this.contentId = post.getId();
+		this.title = post.getTitle();
+	}
+
+	public Long getContentId() {
+		return contentId;
+	}
+
+	public String getTitle() {
+		return title;
 	}
 }

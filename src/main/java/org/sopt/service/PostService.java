@@ -15,6 +15,7 @@ import org.sopt.global.exception.DuplicateTitleException;
 import org.sopt.global.CheckTime;
 import org.sopt.repository.PostRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -43,25 +44,35 @@ public class PostService {
 		return new PostListDTO(postRepository.findAll());
 	}
 
-	public Post getPostById(Long id){
-		return postRepository.findById(id)
-			.orElseThrow(() -> new EntityNotFoundException("해당 게시글이 존재하지 않습니다."));
+	public PostDTO getPostById(Long id){
+		return new PostDTO(postRepository.findById(id)
+			.orElseThrow(() -> new EntityNotFoundException("해당 게시글이 존재하지 않습니다.")));
 	}
 
-	// public void updatePostById(int id, String newTitle){
-	// 	Post post = postRepository.findById(id);
-	// 	if(post == null){
-	// 		throw new IllegalArgumentException("존재하지 않는 ID입니다.");
-	// 	}else if(findDuplicateTitle(newTitle,mapToList(postRepository.findAll()))){
-	// 		throw new DuplicateTitleException();
-	// 	}
-	// 	post.setTitle(newTitle);
-	// }
-	//
-	// public Boolean deletePostById(int id){
-	// 	return postRepository.deleteById(id);
-	// }
-	//
+	@Transactional
+	public PostDTO updatePostById(Long id, String newTitle){
+		if(!postRepository.existsById(id)){
+			throw new IllegalArgumentException("존재하지 않는 ID입니다.");
+		}else if(postRepository.existsByTitle(newTitle)){
+			throw new DuplicateTitleException();
+		}
+
+		Post post = postRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 ID입니다."));
+
+		post.changeTitle(newTitle);
+
+		return new PostDTO(post);
+	}
+
+	@Transactional
+	public void deletePostById(Long id){
+		if(!postRepository.existsById(id)) {
+			throw new IllegalArgumentException("존재하지 않는 ID입니다.");
+		}
+		postRepository.deleteById(id);
+	}
+
 	// public List<Post> findPostsByKeyword(String keyword){
 	// 	return postRepository.findByKeyword(keyword);
 	// }
