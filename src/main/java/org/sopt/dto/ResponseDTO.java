@@ -10,4 +10,16 @@ public class ResponseDTO <T>{
 		this.message = message;
 		this.result = result;
 	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public T getResult() {
+		return result;
+	}
 }

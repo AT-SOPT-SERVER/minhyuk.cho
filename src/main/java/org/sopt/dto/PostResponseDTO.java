@@ -6,4 +6,8 @@ public class PostResponseDTO {
 	public PostResponseDTO(Long contentId){
 		this.ContentId = contentId;
 	}
+
+	public Long getContentId() {
+		return ContentId;
+	}
 }
