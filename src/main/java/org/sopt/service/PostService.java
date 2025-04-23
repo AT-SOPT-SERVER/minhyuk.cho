@@ -22,6 +22,7 @@ public class PostService {
 		this.postRepository = postRepository;
 	}
 
+	@Transactional
 	public PostResponseDTO createPost(String title){
 		if(!postRepository.existsByTitle(title)){
 			Post post = new Post(title);
@@ -33,11 +34,11 @@ public class PostService {
 		}
 	}
 
-
+	@Transactional(readOnly = true)
 	public PostListDTO getAllPosts(){
 		return new PostListDTO(postRepository.findAll());
 	}
-
+	@Transactional(readOnly = true)
 	public PostDTO getPostById(Long id){
 		return new PostDTO(postRepository.findById(id)
 			.orElseThrow(() -> new EntityNotFoundException("해당 게시글이 존재하지 않습니다.")));
@@ -66,7 +67,7 @@ public class PostService {
 		}
 		postRepository.deleteById(id);
 	}
-
+	@Transactional(readOnly = true)
 	public PostListDTO findPostsByKeyword(String keyword){
 		return new PostListDTO(postRepository.findAllByTitleContaining(keyword));
 	}
