@@ -4,18 +4,20 @@ import java.util.List;
 
 import org.sopt.domain.Post;
 import org.sopt.dto.PostRequest;
-import org.sopt.exception.DuplicateTitleException;
-import org.sopt.exception.TImeLimitException;
+import org.sopt.dto.ResponseDTO;
+import org.sopt.global.exception.TImeLimitException;
 import org.sopt.global.CheckTime;
-import org.sopt.repository.PostRepository;
 import org.sopt.service.PostService;
 import org.sopt.utils.EmojiUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequestMapping("/api/v1")
 @RestController
 public class PostController {
 
@@ -25,8 +27,8 @@ public class PostController {
 		this.postService = postService;
 	}
 
-	@PostMapping("/post")
-	public void createPost(@RequestBody final PostRequest postRequest) {
+	@PostMapping("/contents")
+	public ResponseEntity<ResponseDTO> createPost(@RequestBody final PostRequest postRequest) {
 		if(postRequest.getTitle().isEmpty()){
 			throw new IllegalArgumentException("제목이 비어있습니다.");
 		}else{
@@ -37,9 +39,10 @@ public class PostController {
 				throw new TImeLimitException();
 			}
 		}
-		Post post = new Post(postRequest.getTitle());
-		postService.createPost(post);
+		return ResponseEntity.status(HttpStatus.CREATED)
+			.body(new ResponseDTO(201,"게시글이 작성되었습니다.", postService.createPost(postRequest.getTitle())));
 	}
+
 	@GetMapping("/posts")
 	public ResponseEntity<?> getAllPosts(){
 		return ResponseEntity.ok(postService.getAllPosts());
@@ -70,12 +73,5 @@ public class PostController {
 		return postService.findPostsByKeyword(keyword);
 	}
 
-	public void printToFile(){
-		postService.printToFile();
-	}
-
-	public void readFromFile(){
-		postService.readFromFile();
-	}
 
 }

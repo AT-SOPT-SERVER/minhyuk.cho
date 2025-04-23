@@ -8,7 +8,9 @@ import java.util.List;
 
 
 import org.sopt.domain.Post;
-import org.sopt.exception.DuplicateTitleException;
+import org.sopt.dto.PostDTO;
+import org.sopt.dto.PostResponseDTO;
+import org.sopt.global.exception.DuplicateTitleException;
 import org.sopt.global.CheckTime;
 import org.sopt.repository.PostRepository;
 import org.springframework.stereotype.Service;
@@ -17,15 +19,17 @@ import org.springframework.stereotype.Service;
 public class PostService {
 
 	private final PostRepository postRepository;
+
 	public PostService(PostRepository postRepository) {
 		this.postRepository = postRepository;
 	}
 
-	public void createPost(Post post){
-		if(!findDuplicateTitle(post.getTitle(),mapToList(postRepository.findAll()))){
+	public PostResponseDTO createPost(String title){
+		if(!postRepository.existsByTitle(title)){
+			Post post = new Post(title);
 			postRepository.save(post);
-			System.out.println(post.getTitle());
 			CheckTime.setTimestamp();
+			return new PostResponseDTO(post.getId());
 		}else {
 			throw new DuplicateTitleException();
 		}
@@ -57,16 +61,6 @@ public class PostService {
 	public List<Post> findPostsByKeyword(String keyword){
 		return postRepository.findByKeyword(keyword);
 	}
-
-	public void readFromFile(){
-		postRepository.readFromFile();
-	}
-
-
-	public void printToFile(){
-		postRepository.writeToFile();
-	}
-
 
 
 }
