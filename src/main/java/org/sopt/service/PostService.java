@@ -1,11 +1,5 @@
 package org.sopt.service;
 
-import static org.sopt.service.validator.PostValidator.*;
-import static org.sopt.utils.MapUtil.*;
-
-
-import java.util.List;
-import java.util.Optional;
 
 import org.sopt.domain.Post;
 import org.sopt.dto.PostDTO;
@@ -73,9 +67,9 @@ public class PostService {
 		postRepository.deleteById(id);
 	}
 
-	// public List<Post> findPostsByKeyword(String keyword){
-	// 	return postRepository.findByKeyword(keyword);
-	// }
+	public PostListDTO findPostsByKeyword(String keyword){
+		return new PostListDTO(postRepository.findAllByTitleContaining(keyword));
+	}
 
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/api/v1")
@@ -80,9 +81,10 @@ public class PostController {
 			.body(new ResponseDTO<>(200,"게시글이 삭제되었습니다.",null));
 	}
 
-	// public List<Post> searchPostsByKeyword(String keyword) {
-	// 	return postService.findPostsByKeyword(keyword);
-	// }
-
+	@GetMapping(value ="/contents",params = "keyword")
+	public ResponseEntity<?> searchPostsByKeyword(@RequestParam String keyword) {
+		return ResponseEntity.status(200)
+			.body(new ResponseDTO<>(200,"키워드로 게시글 검색 성공",postService.findPostsByKeyword(keyword)));
+	}
 
 }
