@@ -1,4 +1,4 @@
-package org.sopt.exception;
+package org.sopt.global.exception;
 
 public class DuplicateTitleException extends RuntimeException{
 	public DuplicateTitleException(){
