@@ -28,50 +28,53 @@ public class PostController {
 	}
 
 	@PostMapping("/contents")
-	public ResponseEntity<ResponseDTO> createPost(@RequestBody final PostRequest postRequest) {
+	public ResponseEntity<?> createPost(@RequestBody final PostRequest postRequest) {
 		if(postRequest.getTitle().isEmpty()){
 			throw new IllegalArgumentException("제목이 비어있습니다.");
 		}else{
 			int titleLength = EmojiUtil.getEmojiLength(postRequest.getTitle());
 			if(titleLength > 30){
 				throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
-			}else if(!CheckTime.checkTime()){
-				throw new TImeLimitException();
 			}
+			// else if(!CheckTime.checkTime()){
+			// 	throw new TImeLimitException();
+			// }
 		}
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(new ResponseDTO(201,"게시글이 작성되었습니다.", postService.createPost(postRequest.getTitle())));
+			.body(new ResponseDTO<>(201,"게시글이 작성되었습니다.", postService.createPost(postRequest.getTitle())));
 	}
 
-	@GetMapping("/posts")
+
+	@GetMapping("/contents")
 	public ResponseEntity<?> getAllPosts(){
-		return ResponseEntity.ok(postService.getAllPosts());
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(new ResponseDTO<>(200, "전체 게시글이 조회되었습니다.",postService.getAllPosts()));
 	}
 
-	public Post getPostById(int id) {
-		return postService.getPostById(id);
-	}
-
-	public Boolean updatePostTitle(int id, String newTitle) {
-		if(newTitle.isEmpty()){
-			throw new IllegalArgumentException("제목이 비어있습니다.");
-		}else{
-			int titleLength = EmojiUtil.getEmojiLength(newTitle);
-			if(titleLength > 30){
-				throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
-			}
-		}
-		postService.updatePostById(id,newTitle);
-		return true;
-	}
-
-	public Boolean deletePostById(int id) {
-		return postService.deletePostById(id);
-	}
-
-	public List<Post> searchPostsByKeyword(String keyword) {
-		return postService.findPostsByKeyword(keyword);
-	}
+	// public Post getPostById(int id) {
+	// 	return postService.getPostById(id);
+	// }
+	//
+	// public Boolean updatePostTitle(int id, String newTitle) {
+	// 	if(newTitle.isEmpty()){
+	// 		throw new IllegalArgumentException("제목이 비어있습니다.");
+	// 	}else{
+	// 		int titleLength = EmojiUtil.getEmojiLength(newTitle);
+	// 		if(titleLength > 30){
+	// 			throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
+	// 		}
+	// 	}
+	// 	postService.updatePostById(id,newTitle);
+	// 	return true;
+	// }
+	//
+	// public Boolean deletePostById(int id) {
+	// 	return postService.deletePostById(id);
+	// }
+	//
+	// public List<Post> searchPostsByKeyword(String keyword) {
+	// 	return postService.findPostsByKeyword(keyword);
+	// }
 
 
 }
