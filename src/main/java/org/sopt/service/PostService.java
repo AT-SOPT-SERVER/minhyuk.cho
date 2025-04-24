@@ -40,8 +40,10 @@ public class PostService {
 	}
 	@Transactional(readOnly = true)
 	public PostDTO getPostById(Long id){
-		return new PostDTO(postRepository.findById(id)
-			.orElseThrow(() -> new EntityNotFoundException("해당 게시글이 존재하지 않습니다.")));
+		Post post = postRepository.findById(id)
+			.orElseThrow(() -> new EntityNotFoundException("해당 게시글이 존재하지 않습니다."));
+
+		return new PostDTO(post.getId(), post.getTitle());
 	}
 
 	@Transactional
