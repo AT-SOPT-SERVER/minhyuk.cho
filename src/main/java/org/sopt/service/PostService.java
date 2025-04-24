@@ -59,7 +59,7 @@ public class PostService {
 
 		post.changeTitle(newTitle);
 
-		return new PostDTO(post);
+		return new PostDTO(post.getId(),post.getTitle());
 	}
 
 	@Transactional
