@@ -6,8 +6,11 @@ import org.sopt.dto.PostDTO;
 import org.sopt.dto.PostRequest;
 import org.sopt.dto.PostUpdateDTO;
 import org.sopt.dto.ResponseDTO;
+import org.sopt.global.CheckTime;
+import org.sopt.global.exception.TImeLimitException;
 import org.sopt.global.response.ResponseCode;
 import org.sopt.service.PostService;
+import org.sopt.service.validator.PostValidator;
 import org.sopt.utils.EmojiUtil;
 import org.sopt.utils.ResponseUtil;
 import org.springframework.http.HttpStatus;
@@ -34,17 +37,10 @@ public class PostController {
 
 	@PostMapping("")
 	public ResponseEntity<?> createPost(@RequestBody final PostRequest postRequest) {
-		if(postRequest.title().isEmpty()){
-			throw new IllegalArgumentException("제목이 비어있습니다.");
-		}else{
-			int titleLength = EmojiUtil.getEmojiLength(postRequest.title());
-			if(titleLength > 30){
-				throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
-			}
-			// else if(!CheckTime.checkTime()){
-			// 	throw new TImeLimitException();
-			// }
-		}
+		PostValidator.validateTitle(postRequest);
+		// if(!CheckTime.checkTime()){
+		// 	throw new TImeLimitException();
+		// }
 		return ResponseUtil.success(ResponseCode.POST_CREATED,postService.createPost(postRequest));
 	}
 
@@ -61,14 +57,7 @@ public class PostController {
 
 	@PatchMapping("/{contentId}")
 	public ResponseEntity<?> updatePostTitle(@PathVariable("contentId") final Long id, @RequestBody final PostRequest postRequest) {
-		if(postRequest.title().isEmpty()){
-			throw new IllegalArgumentException("제목이 비어있습니다.");
-		}else{
-			int titleLength = EmojiUtil.getEmojiLength(postRequest.title());
-			if(titleLength > 30){
-				throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
-			}
-		}
+		PostValidator.validateTitle(postRequest);
 		return ResponseUtil.success(ResponseCode.POST_UPDATED,postService.updatePostById(new PostUpdateDTO(id,postRequest)));
 
 	}
