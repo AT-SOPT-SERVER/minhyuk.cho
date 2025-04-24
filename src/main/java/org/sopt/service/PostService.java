@@ -4,7 +4,9 @@ package org.sopt.service;
 import org.sopt.domain.Post;
 import org.sopt.dto.PostDTO;
 import org.sopt.dto.PostListDTO;
+import org.sopt.dto.PostRequest;
 import org.sopt.dto.PostResponseDTO;
+import org.sopt.dto.PostUpdateDTO;
 import org.sopt.global.exception.DuplicateTitleException;
 import org.sopt.global.CheckTime;
 import org.sopt.repository.PostRepository;
@@ -23,7 +25,8 @@ public class PostService {
 	}
 
 	@Transactional
-	public PostResponseDTO createPost(String title){
+	public PostResponseDTO createPost(PostRequest postRequest){
+		String title = postRequest.title();
 		if(!postRepository.existsByTitle(title)){
 			Post post = new Post(title);
 			postRepository.save(post);
@@ -47,7 +50,9 @@ public class PostService {
 	}
 
 	@Transactional
-	public PostDTO updatePostById(Long id, String newTitle){
+	public PostDTO updatePostById(PostUpdateDTO postUpdateDTO){
+		Long id = postUpdateDTO.id();
+		String newTitle = postUpdateDTO.postRequest().title();
 		if(!postRepository.existsById(id)){
 			throw new IllegalArgumentException("존재하지 않는 ID입니다.");
 		}else if(postRepository.existsByTitle(newTitle)){

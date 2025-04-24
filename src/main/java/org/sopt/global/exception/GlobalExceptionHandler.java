@@ -1,6 +1,6 @@
 package org.sopt.global.exception;
 
-import org.sopt.dto.ResponseDTO;
+import org.sopt.utils.ResponseUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,20 +13,17 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(DuplicateTitleException.class)
 	public ResponseEntity<?> handleDuplicateTitle(DuplicateTitleException e) {
-		return ResponseEntity.badRequest().body(
-			new ResponseDTO<>(400, e.getMessage(), null));
+		return ResponseUtil.fail(HttpStatus.BAD_REQUEST,e.getMessage());
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException e){
-		return ResponseEntity.badRequest().body(
-			new ResponseDTO<>(400,e.getMessage(),null));
+		return ResponseUtil.fail(HttpStatus.BAD_REQUEST,e.getMessage());
 	}
 
 	@ExceptionHandler(EntityNotFoundException.class)
 	public ResponseEntity<?> handleNotFoundException(EntityNotFoundException e){
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-			new ResponseDTO<>(404,e.getMessage(),null)
+		return ResponseUtil.fail(HttpStatus.NOT_FOUND,e.getMessage());
 		);
 	}
 }

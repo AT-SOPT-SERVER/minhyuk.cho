@@ -2,10 +2,14 @@ package org.sopt.controller;
 
 
 
+import org.sopt.dto.PostDTO;
 import org.sopt.dto.PostRequest;
+import org.sopt.dto.PostUpdateDTO;
 import org.sopt.dto.ResponseDTO;
+import org.sopt.global.response.ResponseCode;
 import org.sopt.service.PostService;
 import org.sopt.utils.EmojiUtil;
+import org.sopt.utils.ResponseUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/contents")
 @RestController
 public class PostController {
 
@@ -28,7 +32,7 @@ public class PostController {
 		this.postService = postService;
 	}
 
-	@PostMapping("/contents")
+	@PostMapping("")
 	public ResponseEntity<?> createPost(@RequestBody final PostRequest postRequest) {
 		if(postRequest.title().isEmpty()){
 			throw new IllegalArgumentException("제목이 비어있습니다.");
@@ -41,24 +45,21 @@ public class PostController {
 			// 	throw new TImeLimitException();
 			// }
 		}
-		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(new ResponseDTO<>(201,"게시글이 작성되었습니다.", postService.createPost(postRequest.title())));
+		return ResponseUtil.success(ResponseCode.POST_CREATED,postService.createPost(postRequest));
 	}
 
 
-	@GetMapping("/contents")
+	@GetMapping("")
 	public ResponseEntity<?> getAllPosts(){
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(new ResponseDTO<>(200, "전체 게시글이 조회되었습니다.",postService.getAllPosts()));
+		return ResponseUtil.success(ResponseCode.POST_ALL,postService.getAllPosts());
 	}
 
-	@GetMapping("/contents/{contentId}")
+	@GetMapping("/{contentId}")
 	public ResponseEntity<?> getPostById(@PathVariable("contentId") final Long id) {
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(new ResponseDTO<>(200,"게시글 상세 조회",postService.getPostById(id)));
+		return ResponseUtil.success(ResponseCode.POST_DETAIL,postService.getPostById(id));
 	}
 
-	@PatchMapping("contents/{contentId}")
+	@PatchMapping("/{contentId}")
 	public ResponseEntity<?> updatePostTitle(@PathVariable("contentId") final Long id, @RequestBody final PostRequest postRequest) {
 		if(postRequest.title().isEmpty()){
 			throw new IllegalArgumentException("제목이 비어있습니다.");
@@ -68,23 +69,19 @@ public class PostController {
 				throw new IllegalArgumentException("제목의 최대 길이는 30자입니다.");
 			}
 		}
-
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(new ResponseDTO<>(200,"게시글이 수정되었습니다.",postService.updatePostById(id,postRequest.title())));
+		return ResponseUtil.success(ResponseCode.POST_UPDATED,postService.updatePostById(new PostUpdateDTO(id,postRequest)));
 
 	}
 
-	@DeleteMapping("/contents/{contentId}")
+	@DeleteMapping("/{contentId}")
 	public ResponseEntity<?> deletePostById(@PathVariable("contentId") Long id) {
 		postService.deletePostById(id);
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(new ResponseDTO<>(200,"게시글이 삭제되었습니다.",null));
+		return ResponseUtil.success(ResponseCode.POST_DELETED,null);
 	}
 
-	@GetMapping(value ="/contents",params = "keyword")
+	@GetMapping(params = "keyword")
 	public ResponseEntity<?> searchPostsByKeyword(@RequestParam String keyword) {
-		return ResponseEntity.status(200)
-			.body(new ResponseDTO<>(200,"키워드로 게시글 검색 성공",postService.findPostsByKeyword(keyword)));
+		return ResponseUtil.success(ResponseCode.POST_KEY_SEARCH,postService.findPostsByKeyword(keyword));
 	}
 
 }
