@@ -1,4 +1,4 @@
-package org.sopt.exception;
+package org.sopt.global.exception;
 
 public class TImeLimitException extends RuntimeException{
 	public TImeLimitException(){

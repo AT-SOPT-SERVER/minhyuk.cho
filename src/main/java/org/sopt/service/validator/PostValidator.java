@@ -1,17 +1,19 @@
 package org.sopt.service.validator;
 
-import java.util.List;
-
-import org.sopt.domain.Post;
+import org.sopt.dto.PostRequest;
+import org.sopt.global.exception.InvalidLongTitleException;
+import org.sopt.global.exception.InvalidNoTitleException;
+import org.sopt.utils.EmojiUtil;
 
 public class PostValidator {
 
-	public static Boolean findDuplicateTitle(String newTitle, List<Post> postList){
-		for(Post posting : postList){
-			if(posting.getTitle().equals(newTitle)){
-				return true;
-			}
+	public static void validateTitle(PostRequest postRequest) {
+		String title = postRequest.title();
+		if (title == null || title.trim().isEmpty()) {
+			throw new InvalidNoTitleException();
 		}
-		return false;
+		if ( EmojiUtil.getEmojiLength(title) > 30) {
+			throw new InvalidLongTitleException();
+		}
 	}
 }

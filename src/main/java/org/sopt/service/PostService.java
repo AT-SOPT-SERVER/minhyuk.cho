@@ -1,72 +1,97 @@
 package org.sopt.service;
 
-import static org.sopt.service.validator.PostValidator.*;
-import static org.sopt.utils.MapUtil.*;
-
 
 import java.util.List;
 
-
 import org.sopt.domain.Post;
-import org.sopt.exception.DuplicateTitleException;
+import org.sopt.dto.PostDTO;
+import org.sopt.dto.PostListDTO;
+import org.sopt.dto.PostRequest;
+import org.sopt.dto.PostResponseDTO;
+import org.sopt.dto.PostUpdateDTO;
+import org.sopt.global.exception.DuplicateTitleException;
 import org.sopt.global.CheckTime;
+import org.sopt.global.exception.InvalidIdException;
+import org.sopt.global.exception.NoListException;
+import org.sopt.global.exception.PostNotFoundException;
 import org.sopt.repository.PostRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 public class PostService {
 
 	private final PostRepository postRepository;
+
 	public PostService(PostRepository postRepository) {
 		this.postRepository = postRepository;
 	}
 
-	public void createPost(Post post){
-		if(!findDuplicateTitle(post.getTitle(),mapToList(postRepository.findAll()))){
+	@Transactional
+	public PostResponseDTO createPost(PostRequest postRequest){
+		String title = postRequest.title();
+		if(!postRepository.existsByTitle(title)){
+			Post post = new Post(title);
 			postRepository.save(post);
-			System.out.println(post.getTitle());
 			CheckTime.setTimestamp();
+			return new PostResponseDTO(post.getId());
 		}else {
 			throw new DuplicateTitleException();
 		}
 	}
 
-
-	public List<Post> getAllPosts(){
-		return mapToList(postRepository.findAll());
+	@Transactional(readOnly = true)
+	public PostListDTO getAllPosts(){
+		List<Post> postList = postRepository.findAll();
+		if(postList.isEmpty()){
+			throw new NoListException();
+		}
+		return new PostListDTO(postList);
 	}
 
-	public Post getPostById(int id){
-		return postRepository.findById(id);
+	@Transactional(readOnly = true)
+	public PostDTO getPostById(Long id){
+		Post post = postRepository.findById(id)
+			.orElseThrow(PostNotFoundException::new);
+
+		return new PostDTO(post.getId(), post.getTitle());
 	}
 
-	public void updatePostById(int id, String newTitle){
-		Post post = postRepository.findById(id);
-		if(post == null){
-			throw new IllegalArgumentException("존재하지 않는 ID입니다.");
-		}else if(findDuplicateTitle(newTitle,mapToList(postRepository.findAll()))){
+	@Transactional
+	public PostDTO updatePostById(PostUpdateDTO postUpdateDTO){
+		Long id = postUpdateDTO.id();
+		String newTitle = postUpdateDTO.postRequest().title();
+		if(!postRepository.existsById(id)){
+			throw new InvalidIdException();
+		}else if(postRepository.existsByTitle(newTitle)){
 			throw new DuplicateTitleException();
 		}
-		post.setTitle(newTitle);
+
+		Post post = postRepository.findById(id)
+			.orElseThrow(InvalidIdException::new);
+
+		post.changeTitle(newTitle);
+
+		return new PostDTO(post.getId(),post.getTitle());
 	}
 
-	public Boolean deletePostById(int id){
-		return postRepository.deleteById(id);
+	@Transactional
+	public void deletePostById(Long id){
+		if(!postRepository.existsById(id)) {
+			throw new InvalidIdException();
+		}
+		postRepository.deleteById(id);
 	}
 
-	public List<Post> findPostsByKeyword(String keyword){
-		return postRepository.findByKeyword(keyword);
+	@Transactional(readOnly = true)
+	public PostListDTO findPostsByKeyword(String keyword){
+		List<Post> postList = postRepository.findAllByTitleContaining(keyword);
+		if(postList.isEmpty()){
+			throw new NoListException();
+		}
+		return new PostListDTO(postList);
 	}
-
-	public void readFromFile(){
-		postRepository.readFromFile();
-	}
-
-
-	public void printToFile(){
-		postRepository.writeToFile();
-	}
-
 
 
 }
