@@ -1,4 +1,4 @@
 package org.sopt.dto;
 
-public record PostDTO (Long contentId, String title) {
+public record PostDTO (String title, String content, String userName) {
 }

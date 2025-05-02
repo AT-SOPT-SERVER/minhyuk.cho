@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sopt.domain.Post;
-
+import org.sopt.domain.User;
 
 public class PostListDTO {
 	private  final List<Content> contentList;
@@ -13,7 +13,7 @@ public class PostListDTO {
 	public PostListDTO(List<Post> list){
 		List<Content> contentList = new ArrayList<>();
 		for(Post post : list){
-			contentList.add(new Content(post.getId(), post.getTitle()));
+			contentList.add(new Content(post.getUser(), post.getTitle()));
 		}
 		this.contentList =contentList;
 	}
@@ -23,16 +23,16 @@ public class PostListDTO {
 	}
 
 	private class Content{
-		private Long contentId;
+		private String userName;
 		private String title;
 
-		public Content(Long contentId, String title){
-			this.contentId = contentId;
+		public Content(User user , String title){
+			this.userName = user.getName();
 			this.title = title;
 		}
 
-		public Long getContentId() {
-			return contentId;
+		public String getUserName(){
+			return userName;
 		}
 
 		public String getTitle() {
