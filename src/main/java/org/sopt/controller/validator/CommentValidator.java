@@ -6,8 +6,7 @@ import org.sopt.global.exception.ErrorCode;
 
 public class CommentValidator {
 
-	public static void validComment(CommentRequest commentRequest){
-		String comment = commentRequest.comment();
+	public static void validComment(String comment){
 		if(comment == null || comment.isBlank()){
 			throw new CustomException(ErrorCode.WRONG_COMMENT);
 		}
