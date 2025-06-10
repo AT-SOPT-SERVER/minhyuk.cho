@@ -1,10 +1,14 @@
 package org.sopt.service.comment;
 
+import java.util.List;
+
 import org.sopt.domain.Comment;
 import org.sopt.domain.Post;
 import org.sopt.domain.User;
 import org.sopt.dto.request.CommentRequest;
 import org.sopt.dto.request.CommentUpdateRequest;
+import org.sopt.dto.CommentResponse;
+import org.sopt.dto.response.CommentListResponse;
 import org.sopt.global.exception.CustomException;
 import org.sopt.global.exception.ErrorCode;
 import org.sopt.repository.CommentRepository;
@@ -56,6 +60,23 @@ public class CommentService {
 		commentRepository.save(comment);
 	}
 
+	@Transactional(readOnly = true)
+	public CommentResponse getComments(Long commentId){
+		return CommentResponse.from(checkComment(commentId));
+	}
+
+	@Transactional
+	public void deleteComment(Long commentId, Long userId){
+		Comment comment = checkComment(commentId);
+		User user = checkUser(userId);
+
+		if(comment.getUser() != user){
+			throw new CustomException(ErrorCode.WRONG_USER);
+		}
+
+		commentRepository.delete(comment);
+	}
+
 
 
 
@@ -69,6 +90,11 @@ public class CommentService {
 	private Post checkPostId(Long postId){
 		return postRepository.findById(postId)
 			.orElseThrow(()->new CustomException(ErrorCode.NO_LIST));
+	}
+
+	private Comment checkComment(Long commentId){
+		return commentRepository.findById(commentId)
+			.orElseThrow(()->new CustomException(ErrorCode.NO_COMMENT));
 	}
 
 }
