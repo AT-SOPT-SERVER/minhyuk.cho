@@ -24,6 +24,9 @@ public class User {
 	@OneToMany(mappedBy = "user")
 	private List<Post> contents = new ArrayList<>();
 
+	@OneToMany(mappedBy = "user")
+	private List<Comment> comments = new ArrayList<>();
+
 
 	public User(){
 

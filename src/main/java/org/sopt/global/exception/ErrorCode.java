@@ -12,7 +12,8 @@ public enum ErrorCode {
 	NO_NAME(HttpStatus.BAD_REQUEST,"유저의 이름이 존재하지 않습니다."),
 	LONG_POST(HttpStatus.BAD_REQUEST,"게시물의 내용은 1000자 이내입니다."),
 	LONG_NAME(HttpStatus.BAD_REQUEST,"유저의 이름은 10자 이내입니다."),
-	NO_USER(HttpStatus.BAD_REQUEST,"사용자를 찾을 수 없습니다.");
+	NO_USER(HttpStatus.BAD_REQUEST,"사용자를 찾을 수 없습니다."),
+	WRONG_COMMENT(HttpStatus.BAD_REQUEST,"댓글의 최대 길이는 300자 입니다.");
 
 	private final HttpStatus status;
 	private final String message;

@@ -1,6 +1,6 @@
 package org.sopt.utils;
 
-import org.sopt.dto.ResponseDTO;
+import org.sopt.dto.response.ResponseDTO;
 import org.sopt.global.response.ResponseCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

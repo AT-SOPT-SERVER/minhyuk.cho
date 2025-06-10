@@ -1,7 +1,7 @@
-package org.sopt.service.User;
+package org.sopt.service.user;
 
 import org.sopt.domain.User;
-import org.sopt.dto.UserRequest;
+import org.sopt.dto.request.UserRequest;
 import org.sopt.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

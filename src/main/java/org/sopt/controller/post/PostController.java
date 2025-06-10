@@ -1,11 +1,11 @@
-package org.sopt.controller.Post;
+package org.sopt.controller.post;
 
 
 
-import org.sopt.dto.PostRequest;
+import org.sopt.dto.request.PostRequest;
 import org.sopt.dto.PostUpdateDTO;
 import org.sopt.global.response.ResponseCode;
-import org.sopt.service.Post.PostService;
+import org.sopt.service.post.PostService;
 import org.sopt.service.validator.PostValidator;
 import org.sopt.utils.ResponseUtil;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package org.sopt.service.Post;
+package org.sopt.service.post;
 
 
 import java.util.List;
@@ -7,8 +7,9 @@ import org.sopt.domain.Post;
 import org.sopt.domain.User;
 import org.sopt.dto.PostDTO;
 import org.sopt.dto.PostListDTO;
-import org.sopt.dto.PostRequest;
-import org.sopt.dto.PostResponseDTO;
+import org.sopt.dto.request.CommentRequest;
+import org.sopt.dto.request.PostRequest;
+import org.sopt.dto.response.PostResponseDTO;
 import org.sopt.dto.PostUpdateDTO;
 import org.sopt.global.exception.CustomException;
 import org.sopt.global.exception.DuplicateTitleException;
@@ -107,6 +108,8 @@ public class PostService {
 		}
 		return new PostListDTO(postList);
 	}
+
+
 
 
 }

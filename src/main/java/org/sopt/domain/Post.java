@@ -1,5 +1,8 @@
 package org.sopt.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sopt.global.BaseTtime;
 import org.springframework.lang.NonNull;
 
@@ -11,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Post extends BaseTtime {
@@ -27,6 +31,10 @@ public class Post extends BaseTtime {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
+
+	@OneToMany(mappedBy = "post")
+	private List<Comment> comments = new ArrayList<>();
+
 
 	protected Post() {
 

@@ -1,6 +1,6 @@
 package org.sopt.service.validator;
 
-import org.sopt.dto.UserRequest;
+import org.sopt.dto.request.UserRequest;
 import org.sopt.global.exception.CustomException;
 import org.sopt.global.exception.ErrorCode;
 import org.sopt.global.exception.NoNameException;

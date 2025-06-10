@@ -1,6 +1,6 @@
 package org.sopt.service.validator;
 
-import org.sopt.dto.PostRequest;
+import org.sopt.dto.request.PostRequest;
 import org.sopt.global.exception.CustomException;
 import org.sopt.global.exception.ErrorCode;
 import org.sopt.global.exception.InvalidLongTitleException;

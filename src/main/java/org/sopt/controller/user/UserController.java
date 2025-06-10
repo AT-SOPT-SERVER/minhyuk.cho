@@ -1,9 +1,8 @@
-package org.sopt.controller.User;
+package org.sopt.controller.user;
 
-import org.sopt.dto.UserRequest;
-import org.sopt.global.exception.NoNameException;
+import org.sopt.dto.request.UserRequest;
 import org.sopt.global.response.ResponseCode;
-import org.sopt.service.User.UserService;
+import org.sopt.service.user.UserService;
 import org.sopt.service.validator.UserValidator;
 import org.sopt.utils.ResponseUtil;
 import org.springframework.http.ResponseEntity;
