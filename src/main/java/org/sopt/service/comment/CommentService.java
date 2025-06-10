@@ -4,6 +4,7 @@ import org.sopt.domain.Comment;
 import org.sopt.domain.Post;
 import org.sopt.domain.User;
 import org.sopt.dto.request.CommentRequest;
+import org.sopt.dto.request.CommentUpdateRequest;
 import org.sopt.global.exception.CustomException;
 import org.sopt.global.exception.ErrorCode;
 import org.sopt.repository.CommentRepository;
@@ -35,6 +36,22 @@ public class CommentService {
 			.post(post)
 			.user(user)
 			.build();
+
+		commentRepository.save(comment);
+	}
+
+	@Transactional
+	public void updateComment(CommentUpdateRequest request, Long userId){
+		User user = checkUser(userId);
+		checkPostId(request.postId());
+
+		Comment comment = commentRepository.findById(request.commentId()).orElseThrow(()-> new CustomException(
+			ErrorCode.NO_COMMENT));
+		if(user != comment.getUser()){
+			throw new CustomException(ErrorCode.WRONG_USER);
+		}
+
+		comment.setContent(request.content());
 
 		commentRepository.save(comment);
 	}
