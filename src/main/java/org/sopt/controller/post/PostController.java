@@ -77,4 +77,11 @@ public class PostController {
 		return ResponseUtil.success(ResponseCode.POST_KEY_SEARCH,postService.findPostsByKeyword(keyword));
 	}
 
+
+	@PostMapping("/like")
+	public ResponseEntity<?> createPostLike(@RequestParam Long userId, @RequestParam Long postId){
+		return  ResponseUtil.success(ResponseCode.POST_LIKE,postService.createPostLike(userId,postId));
+	}
+
+
 }

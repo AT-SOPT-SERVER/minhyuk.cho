@@ -4,8 +4,10 @@ package org.sopt.service.post;
 import java.util.List;
 
 import org.sopt.domain.Post;
+import org.sopt.domain.PostLike;
 import org.sopt.domain.User;
 import org.sopt.dto.PostDTO;
+import org.sopt.dto.PostLikeDTO;
 import org.sopt.dto.PostListDTO;
 import org.sopt.dto.request.CommentRequest;
 import org.sopt.dto.request.PostRequest;
@@ -18,8 +20,10 @@ import org.sopt.global.exception.ErrorCode;
 import org.sopt.global.exception.InvalidIdException;
 import org.sopt.global.exception.NoListException;
 import org.sopt.global.exception.PostNotFoundException;
+import org.sopt.repository.PostLikeRepository;
 import org.sopt.repository.PostRepository;
 import org.sopt.repository.UserRepository;
+import org.sopt.repository.impl.PostLikeRepositoryImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +33,12 @@ public class PostService {
 
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
-	public PostService(PostRepository postRepository,UserRepository userRepository) {
+	private final PostLikeRepository postLikeRepository;
+
+	public PostService(PostRepository postRepository,UserRepository userRepository,PostLikeRepository postLikeRepository) {
 		this.postRepository = postRepository;
 		this.userRepository = userRepository;
+		this.postLikeRepository = postLikeRepository;
 	}
 
 	@Transactional
@@ -107,6 +114,27 @@ public class PostService {
 			throw new NoListException();
 		}
 		return new PostListDTO(postList);
+	}
+
+	@Transactional
+	public PostLikeDTO createPostLike(Long userId, Long postId){
+		Post post = postRepository.findById(postId).orElseThrow(()->new CustomException(ErrorCode.NO_POST));
+		User user = userRepository.findById(userId).orElseThrow(()->new CustomException(ErrorCode.NO_USER));
+
+		boolean isAlready = postLikeRepository.existsByUserAndPost(user,post);
+		if(!isAlready){
+			//여기서 비용을 고려해봐야하는데 필드에 boolean 둬서 하는 방법 or 그냥 delete 하는 방법
+			//일단은 delete 하는 방식으로 구현하고, 후에 수정할 예정
+			PostLike postLike = postLikeRepository.findByUserAndPost(user,post);
+			postLikeRepository.deleteById(postLike.getId());
+		}
+
+		PostLike postLike = PostLike.builder()
+			.post(post)
+			.user(user)
+			.build();
+
+		return new PostLikeDTO(postLikeRepository.save(postLike));
 	}
 
 
