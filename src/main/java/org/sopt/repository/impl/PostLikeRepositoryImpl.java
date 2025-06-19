@@ -40,6 +40,6 @@ public class PostLikeRepositoryImpl implements PostLikeRepositoryCustom {
 				like.user.eq(user),
 				like.post.eq(post)
 			)
-			.fetchFirst(); // 또는 .fetchOne()
+			.fetchFirst();
 	}
 }
