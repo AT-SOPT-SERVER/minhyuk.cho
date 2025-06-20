@@ -15,10 +15,9 @@ import lombok.RequiredArgsConstructor;
 public class CommentLikeRepositoryImpl implements CommentLikeRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
-
+	QCommentLike like = QCommentLike.commentLike;
 	@Override
 	public boolean existsByUserAndComment(User user, Comment comment) {
-		QCommentLike like = QCommentLike.commentLike;
 
 		return queryFactory
 			.selectOne()
@@ -33,7 +32,6 @@ public class CommentLikeRepositoryImpl implements CommentLikeRepositoryCustom {
 
 	@Override
 	public CommentLike findByUserAndComment(User user, Comment comment){
-		QCommentLike like = QCommentLike.commentLike;
 
 		return queryFactory
 			.selectFrom(like)
