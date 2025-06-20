@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -38,11 +39,14 @@ public class User {
 		this.email = email;
 	}
 
+	@Builder
 	public User(Long id, String name, String email) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
 	}
+
+
 
 	public String getName() {
 		return name;

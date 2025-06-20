@@ -1,10 +1,10 @@
 package org.sopt.service.validator;
 
 import org.sopt.dto.request.PostRequest;
-import org.sopt.global.exception.CustomException;
-import org.sopt.global.exception.ErrorCode;
-import org.sopt.global.exception.InvalidLongTitleException;
-import org.sopt.global.exception.InvalidNoTitleException;
+import org.sopt.global.exception.ErrorCodes.CustomException;
+import org.sopt.global.exception.ErrorCodes.ErrorCode;
+import org.sopt.global.exception.ErrorCodes.InvalidLongTitleException;
+import org.sopt.global.exception.ErrorCodes.InvalidNoTitleException;
 import org.sopt.utils.EmojiUtil;
 
 public class PostValidator {

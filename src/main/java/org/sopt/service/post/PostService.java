@@ -7,23 +7,21 @@ import org.sopt.domain.Post;
 import org.sopt.domain.PostLike;
 import org.sopt.domain.User;
 import org.sopt.dto.PostDTO;
-import org.sopt.dto.PostLikeDTO;
+import org.sopt.dto.LikeDTO;
 import org.sopt.dto.PostListDTO;
-import org.sopt.dto.request.CommentRequest;
 import org.sopt.dto.request.PostRequest;
 import org.sopt.dto.response.PostResponseDTO;
 import org.sopt.dto.PostUpdateDTO;
-import org.sopt.global.exception.CustomException;
-import org.sopt.global.exception.DuplicateTitleException;
+import org.sopt.global.exception.ErrorCodes.CustomException;
+import org.sopt.global.exception.ErrorCodes.DuplicateTitleException;
 import org.sopt.global.CheckTime;
-import org.sopt.global.exception.ErrorCode;
-import org.sopt.global.exception.InvalidIdException;
-import org.sopt.global.exception.NoListException;
-import org.sopt.global.exception.PostNotFoundException;
+import org.sopt.global.exception.ErrorCodes.ErrorCode;
+import org.sopt.global.exception.ErrorCodes.InvalidIdException;
+import org.sopt.global.exception.ErrorCodes.NoListException;
+import org.sopt.global.exception.ErrorCodes.PostNotFoundException;
 import org.sopt.repository.PostLikeRepository;
 import org.sopt.repository.PostRepository;
 import org.sopt.repository.UserRepository;
-import org.sopt.repository.impl.PostLikeRepositoryImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -117,7 +115,7 @@ public class PostService {
 	}
 
 	@Transactional
-	public PostLikeDTO createPostLike(Long userId, Long postId){
+	public LikeDTO createPostLike(Long userId, Long postId){
 		Post post = postRepository.findById(postId).orElseThrow(()->new CustomException(ErrorCode.NO_POST));
 		User user = userRepository.findById(userId).orElseThrow(()->new CustomException(ErrorCode.NO_USER));
 
@@ -127,14 +125,15 @@ public class PostService {
 			//일단은 delete 하는 방식으로 구현하고, 후에 수정할 예정
 			PostLike postLike = postLikeRepository.findByUserAndPost(user,post);
 			postLikeRepository.deleteById(postLike.getId());
+			return new LikeDTO("게시글에 대한 좋아요가 해제되었습니다.");
 		}
 
 		PostLike postLike = PostLike.builder()
 			.post(post)
 			.user(user)
 			.build();
-
-		return new PostLikeDTO(postLikeRepository.save(postLike));
+		postLikeRepository.save(postLike);
+		return new LikeDTO("게시글에 대한 좋아요가 추가되었습니다.");
 	}
 
 
