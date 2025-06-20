@@ -53,3 +53,8 @@ sourceSets {
 tasks.withType(JavaCompile) {
     options.getGeneratedSourceOutputDirectory().set(generated)
 }
+
+// ✅ 꼭 추가
+test {
+    useJUnitPlatform()
+}
