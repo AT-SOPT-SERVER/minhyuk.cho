@@ -1,4 +1,4 @@
-package org.sopt.global.exception;
+package org.sopt.global.exception.ErrorCodes;
 
 public class InvalidLongTitleException extends CustomException{
 	public InvalidLongTitleException(){
