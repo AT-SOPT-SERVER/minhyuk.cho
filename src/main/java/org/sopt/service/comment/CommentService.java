@@ -1,16 +1,16 @@
 package org.sopt.service.comment;
 
-import java.util.List;
-
 import org.sopt.domain.Comment;
+import org.sopt.domain.CommentLike;
 import org.sopt.domain.Post;
 import org.sopt.domain.User;
+import org.sopt.dto.LikeDTO;
 import org.sopt.dto.request.CommentRequest;
 import org.sopt.dto.request.CommentUpdateRequest;
 import org.sopt.dto.CommentResponse;
-import org.sopt.dto.response.CommentListResponse;
-import org.sopt.global.exception.CustomException;
-import org.sopt.global.exception.ErrorCode;
+import org.sopt.global.exception.ErrorCodes.CustomException;
+import org.sopt.global.exception.ErrorCodes.ErrorCode;
+import org.sopt.repository.CommentLikeRepository;
 import org.sopt.repository.CommentRepository;
 import org.sopt.repository.PostRepository;
 import org.sopt.repository.UserRepository;
@@ -27,6 +27,7 @@ public class CommentService {
 	private final UserRepository userRepository;
 	private final CommentRepository commentRepository;
 	private final PostRepository postRepository;
+	private final CommentLikeRepository commentLikeRepository;
 
 	@Transactional
 	public void createComment(CommentRequest request, Long userId){
@@ -77,8 +78,29 @@ public class CommentService {
 		commentRepository.delete(comment);
 	}
 
+	//comment로 수정
+	//추가로 여기에 비동기적으로 동작하게끔 만들어두면 좋겠다.
+	//그래야지 현재 몇 명 눌렀는지 바로 반영시킬 수 있게 되니까 ㅇㅋ
+	@Transactional
+	public LikeDTO createCommentLike(Long userId, Long commentId){
+		Comment comment = commentRepository.findById(commentId).orElseThrow(()->new CustomException(ErrorCode.NO_COMMENT));
+		User user = userRepository.findById(userId).orElseThrow(()->new CustomException(ErrorCode.NO_USER));
 
+		CommentLike commentLike = commentLikeRepository.findByUserAndComment(user,comment);
+		if(commentLike != null){
+			//여기서 비용을 고려해봐야하는데 필드에 boolean 둬서 하는 방법 or 그냥 delete 하는 방법
+			//일단은 delete 하는 방식으로 구현하고, 후에 수정할 예정
+			commentLikeRepository.deleteById(commentLike.getId());
+			return new LikeDTO("댓글에 대한 좋아요가 취소되었습니다.");
+		}
 
+		CommentLike commentLike1 = CommentLike.builder()
+			.comment(comment)
+			.user(user)
+			.build();
+		commentLikeRepository.save(commentLike1);
+		return new LikeDTO("댓글에 대한 좋아요가 추가되었습니다.");
+	}
 
 	private User checkUser(Long userId){
 		//유저가 존재하는지 확인하기 + 추가로 수정하기 위해서는 해당 댓글을 작성한 것이 유저가 맞는지 확인하기

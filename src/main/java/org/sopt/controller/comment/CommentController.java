@@ -5,6 +5,7 @@ import org.sopt.dto.request.CommentRequest;
 import org.sopt.dto.request.CommentUpdateRequest;
 import org.sopt.dto.response.ResponseDTO;
 import org.sopt.service.comment.CommentService;
+import org.sopt.utils.ResponseUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,12 +15,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/comment")
+@RequestMapping("/api/v1/comment")
 @RequiredArgsConstructor
 public class CommentController {
 
@@ -57,6 +59,10 @@ public class CommentController {
 		return ResponseEntity.ok(new ResponseDTO<>(200,"댓글 삭제에 성공하였습니다."));
 	}
 
+	@PostMapping("/like")
+	public ResponseEntity<ResponseDTO<?>> createLike(@RequestParam Long userId, @RequestParam Long commentId){
+		return ResponseEntity.ok(new ResponseDTO<>(200,commentService.createCommentLike(userId,commentId).description()));
+	}
 
 
 }

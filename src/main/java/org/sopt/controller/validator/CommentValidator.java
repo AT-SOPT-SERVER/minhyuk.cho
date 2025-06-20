@@ -1,8 +1,7 @@
 package org.sopt.controller.validator;
 
-import org.sopt.dto.request.CommentRequest;
-import org.sopt.global.exception.CustomException;
-import org.sopt.global.exception.ErrorCode;
+import org.sopt.global.exception.ErrorCodes.CustomException;
+import org.sopt.global.exception.ErrorCodes.ErrorCode;
 
 public class CommentValidator {
 
