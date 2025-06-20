@@ -10,6 +10,7 @@ import org.sopt.dto.PostDTO;
 import org.sopt.dto.LikeDTO;
 import org.sopt.dto.PostListDTO;
 import org.sopt.dto.request.PostRequest;
+import org.sopt.dto.response.PostListResponse;
 import org.sopt.dto.response.PostResponseDTO;
 import org.sopt.dto.PostUpdateDTO;
 import org.sopt.global.exception.ErrorCodes.CustomException;
@@ -22,6 +23,8 @@ import org.sopt.global.exception.ErrorCodes.PostNotFoundException;
 import org.sopt.repository.PostLikeRepository;
 import org.sopt.repository.PostRepository;
 import org.sopt.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,12 +58,12 @@ public class PostService {
 	}
 
 	@Transactional(readOnly = true)
-	public PostListDTO getAllPosts(){
-		List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc();
+	public PostListResponse getAllPosts(Pageable pageable){
+		Page<Post> postList = postRepository.findAllWithPageable(pageable);
 		if(postList.isEmpty()){
 			throw new NoListException();
 		}
-		return new PostListDTO(postList);
+		return new PostListResponse(postList);
 	}
 
 	@Transactional(readOnly = true)
@@ -106,12 +109,12 @@ public class PostService {
 	}
 
 	@Transactional(readOnly = true)
-	public PostListDTO findPostsByKeyword(String keyword){
-		List<Post> postList = postRepository.findAllByTitleContaining(keyword);
+	public PostListResponse findPostsByKeyword(Pageable pageable, String keyword){
+		Page<Post> postList = postRepository.findAllByTitleContaining(pageable, keyword);
 		if(postList.isEmpty()){
 			throw new NoListException();
 		}
-		return new PostListDTO(postList);
+		return new PostListResponse(postList);
 	}
 
 	@Transactional

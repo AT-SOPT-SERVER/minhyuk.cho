@@ -8,6 +8,9 @@ import org.sopt.global.response.ResponseCode;
 import org.sopt.service.post.PostService;
 import org.sopt.service.validator.PostValidator;
 import org.sopt.utils.ResponseUtil;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,8 +48,8 @@ public class PostController {
 
 
 	@GetMapping("")
-	public ResponseEntity<?> getAllPosts(){
-		return ResponseUtil.success(ResponseCode.POST_ALL,postService.getAllPosts());
+	public ResponseEntity<?> getAllPosts(@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
+		return ResponseUtil.success(ResponseCode.POST_ALL,postService.getAllPosts(pageable));
 	}
 
 	@GetMapping("/{contentId}")
@@ -73,8 +76,9 @@ public class PostController {
 	}
 
 	@GetMapping(params = "keyword")
-	public ResponseEntity<?> searchPostsByKeyword(@RequestParam String keyword) {
-		return ResponseUtil.success(ResponseCode.POST_KEY_SEARCH,postService.findPostsByKeyword(keyword));
+	public ResponseEntity<?> searchPostsByKeyword(@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+		,@RequestParam String keyword) {
+		return ResponseUtil.success(ResponseCode.POST_KEY_SEARCH,postService.findPostsByKeyword(pageable,keyword));
 	}
 
 
