@@ -34,8 +34,6 @@ public class Post extends BaseTtime {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@OneToMany(mappedBy = "post")
-	private List<Comment> comments = new ArrayList<>();
 
 
 	protected Post() {
