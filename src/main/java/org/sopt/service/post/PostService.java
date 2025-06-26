@@ -2,10 +2,13 @@ package org.sopt.service.post;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.sopt.domain.Comment;
 import org.sopt.domain.Post;
 import org.sopt.domain.PostLike;
 import org.sopt.domain.User;
+import org.sopt.dto.CommentResponse;
 import org.sopt.dto.PostDTO;
 import org.sopt.dto.LikeDTO;
 import org.sopt.dto.PostListDTO;
@@ -20,6 +23,7 @@ import org.sopt.global.exception.ErrorCodes.ErrorCode;
 import org.sopt.global.exception.ErrorCodes.InvalidIdException;
 import org.sopt.global.exception.ErrorCodes.NoListException;
 import org.sopt.global.exception.ErrorCodes.PostNotFoundException;
+import org.sopt.repository.CommentRepository;
 import org.sopt.repository.PostLikeRepository;
 import org.sopt.repository.PostRepository;
 import org.sopt.repository.UserRepository;
@@ -35,11 +39,13 @@ public class PostService {
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
 	private final PostLikeRepository postLikeRepository;
+	private final CommentRepository commentRepository;
 
-	public PostService(PostRepository postRepository,UserRepository userRepository,PostLikeRepository postLikeRepository) {
+	public PostService(PostRepository postRepository,UserRepository userRepository,PostLikeRepository postLikeRepository,CommentRepository commentRepository) {
 		this.postRepository = postRepository;
 		this.userRepository = userRepository;
 		this.postLikeRepository = postLikeRepository;
+		this.commentRepository = commentRepository;
 	}
 
 	@Transactional
@@ -70,7 +76,13 @@ public class PostService {
 	public PostDTO getPostById(Long id){
 		Post post = postRepository.findById(id)
 			.orElseThrow(PostNotFoundException::new);
-		return new PostDTO(post.getTitle(), post.getContent(),post.getUser().getName());
+
+		Long likeCount = postLikeRepository.countByPost(post);
+		List<CommentResponse> comments = commentRepository.findAllByPost(post).stream()
+			.map(CommentResponse::from)
+			.collect(Collectors.toList());
+
+		return new PostDTO(post.getTitle(), post.getContent(),post.getUser().getName(),likeCount,comments);
 	}
 
 	@Transactional
@@ -91,18 +103,24 @@ public class PostService {
 			throw new IllegalArgumentException("글을 작성한 유저가 아닙니다.");
 		}
 		post.changeTitleAndContent(newTitle,postUpdateDTO.postRequest().content());
-		return new PostDTO(post.getTitle(),post.getContent(),post.getUser().getName());
+
+		Long likeCount = postLikeRepository.countByPost(post);
+		List<CommentResponse> comments = commentRepository.findAllByPost(post).stream()
+			.map(CommentResponse::from)
+			.collect(Collectors.toList());
+		return new PostDTO(post.getTitle(),post.getContent(),post.getUser().getName(),likeCount,comments);
 	}
 
 	@Transactional
 	public void deletePostById(Long userId, Long id){
-		if(!postRepository.existsById(id)) {
-			throw new InvalidIdException();
-		}
+
 		User user = userRepository.findById(userId)
 			.orElseThrow(()->new CustomException(ErrorCode.NO_USER));
 
-		if(postRepository.findById(id).get().getUser() != user){
+		Post post = postRepository.findById(id)
+			.orElseThrow(()->new CustomException(ErrorCode.NO_POST));
+
+		if(post.getUser() != user){
 			throw new IllegalArgumentException("글을 작성한 유저가 아닙니다.");
 		}
 		postRepository.deleteById(id);
@@ -123,7 +141,7 @@ public class PostService {
 		User user = userRepository.findById(userId).orElseThrow(()->new CustomException(ErrorCode.NO_USER));
 
 		boolean isAlready = postLikeRepository.existsByUserAndPost(user,post);
-		if(!isAlready){
+		if(isAlready){
 			//여기서 비용을 고려해봐야하는데 필드에 boolean 둬서 하는 방법 or 그냥 delete 하는 방법
 			//일단은 delete 하는 방식으로 구현하고, 후에 수정할 예정
 			PostLike postLike = postLikeRepository.findByUserAndPost(user,post);

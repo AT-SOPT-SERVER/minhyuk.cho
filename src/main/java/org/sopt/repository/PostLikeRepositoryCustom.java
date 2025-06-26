@@ -7,4 +7,5 @@ import org.sopt.domain.User;
 public interface PostLikeRepositoryCustom {
 	boolean existsByUserAndPost(User user, Post post);
 	PostLike findByUserAndPost(User user, Post post);
+	Long countByPost(Post post);
 }

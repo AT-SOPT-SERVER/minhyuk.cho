@@ -35,7 +35,6 @@ public class Post extends BaseTtime {
 	private User user;
 
 
-
 	protected Post() {
 
 	}

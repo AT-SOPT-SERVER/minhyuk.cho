@@ -30,7 +30,7 @@ public class CommentService {
 	private final CommentLikeRepository commentLikeRepository;
 
 	@Transactional
-	public void createComment(CommentRequest request, Long userId){
+	public Comment createComment(CommentRequest request, Long userId){
 		//여기서 유효성을 검색할게 있을까?
 		//유저가 실제로 존재하는 유저인지 확인
 		User user = checkUser(userId);
@@ -42,7 +42,7 @@ public class CommentService {
 			.user(user)
 			.build();
 
-		commentRepository.save(comment);
+		return commentRepository.save(comment);
 	}
 
 	@Transactional

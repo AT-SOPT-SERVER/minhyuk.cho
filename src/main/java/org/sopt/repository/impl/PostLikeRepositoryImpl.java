@@ -16,9 +16,10 @@ public class PostLikeRepositoryImpl implements PostLikeRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 
+	QPostLike like = QPostLike.postLike;
+
 	@Override
 	public boolean existsByUserAndPost(User user, Post post) {
-		QPostLike like = QPostLike.postLike;
 
 		return queryFactory
 			.selectOne()
@@ -32,7 +33,6 @@ public class PostLikeRepositoryImpl implements PostLikeRepositoryCustom {
 
 	@Override
 	public PostLike findByUserAndPost(User user, Post post) {
-		QPostLike like = QPostLike.postLike;
 
 		return queryFactory
 			.selectFrom(like)
@@ -41,5 +41,14 @@ public class PostLikeRepositoryImpl implements PostLikeRepositoryCustom {
 				like.post.eq(post)
 			)
 			.fetchFirst();
+	}
+
+	@Override
+	public Long countByPost(Post post){
+		return queryFactory
+			.select(like.count())
+			.from(like)
+			.where(like.post.eq(post))
+			.fetchOne();
 	}
 }
