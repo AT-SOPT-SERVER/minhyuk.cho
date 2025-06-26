@@ -7,6 +7,7 @@ public enum ResponseCode {
 	POST_DETAIL(200, "게시글 상세 조회"),
 	POST_ALL(200, "전체 게시글이 조회되었습니다."),
 	POST_KEY_SEARCH(200,"키워드로 게시글 검색 성공"),
+	POST_LIKE(201,"게시글 좋아요가 달렸습니다."),
 	USER_CREATED(201,"회원가입이 완료되었습니다.");
 
 
