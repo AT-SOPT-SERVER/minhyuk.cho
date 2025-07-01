@@ -1,0 +1,1 @@
+-- CREATE INDEX IF NOT EXISTS idx_post_like_post ON post_like(post_id);

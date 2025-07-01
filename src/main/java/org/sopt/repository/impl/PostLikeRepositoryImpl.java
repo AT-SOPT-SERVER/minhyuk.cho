@@ -19,14 +19,14 @@ public class PostLikeRepositoryImpl implements PostLikeRepositoryCustom {
 	QPostLike like = QPostLike.postLike;
 
 	@Override
-	public boolean existsByUserAndPost(User user, Post post) {
+	public boolean existsByUserIdAndPostId(Long user, Long post) {
 
 		return queryFactory
 			.selectOne()
 			.from(like)
 			.where(
-				like.user.eq(user),
-				like.post.eq(post)
+				like.user.id.eq(user),
+				like.post.id.eq(post)
 			)
 			.fetchFirst() != null;
 	}
@@ -51,4 +51,14 @@ public class PostLikeRepositoryImpl implements PostLikeRepositoryCustom {
 			.where(like.post.eq(post))
 			.fetchOne();
 	}
+
+	// public Boolean existByUserIdAndPostId(Long userId, Long postId){
+	//
+	// 	return queryFactory
+	// 		.selectOne()
+	// 		.from(like)
+	// 		.where(like.eq())
+	//
+	// }
+
 }

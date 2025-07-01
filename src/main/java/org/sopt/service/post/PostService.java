@@ -40,12 +40,14 @@ public class PostService {
 	private final UserRepository userRepository;
 	private final PostLikeRepository postLikeRepository;
 	private final CommentRepository commentRepository;
+	private final PostLikeCacheService postLikeCacheService;
 
-	public PostService(PostRepository postRepository,UserRepository userRepository,PostLikeRepository postLikeRepository,CommentRepository commentRepository) {
+	public PostService(PostRepository postRepository,UserRepository userRepository,PostLikeRepository postLikeRepository,CommentRepository commentRepository, PostLikeCacheService postLikeCacheService) {
 		this.postRepository = postRepository;
 		this.userRepository = userRepository;
 		this.postLikeRepository = postLikeRepository;
 		this.commentRepository = commentRepository;
+		this.postLikeCacheService = postLikeCacheService;
 	}
 
 	@Transactional
@@ -72,18 +74,44 @@ public class PostService {
 		return new PostListResponse(postList);
 	}
 
+	// @Transactional(readOnly = true)
+	// public PostDTO getPostById(Long id){
+	// 	Post post = postRepository.findById(id)
+	// 		.orElseThrow(PostNotFoundException::new);
+	//
+	// 	Long likeCount = postLikeRepository.countByPost(post);
+	// 	List<CommentResponse> comments = commentRepository.findAllByPost(post).stream()
+	// 		.map(CommentResponse::from)
+	// 		.collect(Collectors.toList());
+	//
+	// 	return new PostDTO(post.getTitle(), post.getContent(),post.getUser().getName(),likeCount,comments);
+	// }
+
 	@Transactional(readOnly = true)
-	public PostDTO getPostById(Long id){
-		Post post = postRepository.findById(id)
+	public PostDTO getPostById(Long postId) {
+		Post post = postRepository.findById(postId)
 			.orElseThrow(PostNotFoundException::new);
 
-		Long likeCount = postLikeRepository.countByPost(post);
-		List<CommentResponse> comments = commentRepository.findAllByPost(post).stream()
-			.map(CommentResponse::from)
-			.collect(Collectors.toList());
+		int likeCount = postLikeCacheService.getLikeCount(postId);
 
-		return new PostDTO(post.getTitle(), post.getContent(),post.getUser().getName(),likeCount,comments);
+		// Redis에 없을 경우 → DB에서 가져와서 캐싱
+		if (likeCount == 0) {
+			likeCount = postLikeRepository.countByPost(post).intValue();
+			postLikeCacheService.initLikeCount(postId, likeCount);
+		}
+
+			List<CommentResponse> comments = commentRepository.findAllByPost(post).stream()
+				.map(CommentResponse::from)
+				.collect(Collectors.toList());
+
+			return new PostDTO(post.getTitle(), post.getContent(),post.getUser().getName(),(long)likeCount,comments);
 	}
+
+
+
+
+
+
 
 	@Transactional
 	public PostDTO updatePostById(Long userId,PostUpdateDTO postUpdateDTO){
@@ -140,7 +168,7 @@ public class PostService {
 		Post post = postRepository.findById(postId).orElseThrow(()->new CustomException(ErrorCode.NO_POST));
 		User user = userRepository.findById(userId).orElseThrow(()->new CustomException(ErrorCode.NO_USER));
 
-		boolean isAlready = postLikeRepository.existsByUserAndPost(user,post);
+		boolean isAlready = postLikeRepository.existsByUserIdAndPostId(userId,postId);
 		if(isAlready){
 			//여기서 비용을 고려해봐야하는데 필드에 boolean 둬서 하는 방법 or 그냥 delete 하는 방법
 			//일단은 delete 하는 방식으로 구현하고, 후에 수정할 예정
@@ -158,6 +186,29 @@ public class PostService {
 	}
 
 
+	@Transactional
+	public LikeDTO togglePostLike(Long userId, Long postId){
+		if(!postRepository.existsById(postId)){
+				throw new CustomException(ErrorCode.NO_POST);
+			}
+
+		if(!userRepository.existsById(userId)){
+			throw new CustomException(ErrorCode.NO_USER);
+		}
+
+		if(postLikeCacheService.isLiked(postId,userId)){
+			postLikeCacheService.unlike(postId,userId);
+			return new LikeDTO("게시글에 대한 좋아요가 해제되었습니다.");
+		}else {
+			postLikeCacheService.like(postId, userId);
+			return new LikeDTO("게시글에 대한 좋아요가 추가되었습니다.");
+		}
+	}
+
+	@Transactional
+	public void save(Long postId, Long userId) {
+		postLikeRepository.saveIgnoreDuplicate(postId, userId);
+	}
 
 
 }

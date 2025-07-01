@@ -7,11 +7,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Builder;
 import lombok.Getter;
 
 @Entity
 @Getter
+@Table(
+	name = "post_like",
+	uniqueConstraints = @UniqueConstraint(columnNames = {"post_id", "user_id"})
+)
 public class PostLike {
 
 	@Id
@@ -19,11 +25,11 @@ public class PostLike {
 	private Long id;
 
 	//단방향의 맵핑이면 된다.
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne
 	@JoinColumn(name = "post_id")
 	private Post post;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne
 	@JoinColumn(name = "user_id")
 	private User user;
 

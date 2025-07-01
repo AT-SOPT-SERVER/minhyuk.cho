@@ -90,7 +90,7 @@ public class PostController {
 
 	@PostMapping("/like")
 	public ResponseEntity<ResponseDTO<LikeDTO>> createPostLike(@RequestParam Long userId, @RequestParam Long postId){
-		return  ResponseUtil.success(ResponseCode.POST_LIKE,postService.createPostLike(userId,postId));
+		return  ResponseUtil.success(ResponseCode.POST_LIKE,postService.togglePostLike(userId,postId));
 	}
 
 
