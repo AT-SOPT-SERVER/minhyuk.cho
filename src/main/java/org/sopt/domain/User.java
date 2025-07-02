@@ -9,7 +9,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Entity
 public class User {
 	@Id
@@ -21,10 +24,6 @@ public class User {
 
 	private String email;
 
-	@OneToMany(mappedBy = "user")
-	private List<Post> contents = new ArrayList<>();
-
-
 	public User(){
 
 	}
@@ -33,11 +32,14 @@ public class User {
 		this.email = email;
 	}
 
+	@Builder
 	public User(Long id, String name, String email) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
 	}
+
+
 
 	public String getName() {
 		return name;
